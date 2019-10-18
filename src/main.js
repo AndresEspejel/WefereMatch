@@ -17,7 +17,7 @@ async function start() {
         const OAuthClient = await createOAuthClient()
         requestUserConsent(OAuthClient)
         const authorizationToken =  await waitForGoogleCallback(webServer)
-        await requestGoogleForAccessTokens()
+        await requestGoogleForAccessTokens(OAuthClient,authorizationToken)
         //await setGlobalGoogleAuthentication()
         //await stopWebServer()
         
@@ -63,6 +63,20 @@ async function start() {
                     resolve(authCode)
                 })
 
+            })
+        }
+        async function requestGoogleForAccessTokens(OAuthClient,authorizationToken){
+            return new Promise((resolve,reject)=>{
+                OAuthClient.getToken(authorizationToken, (error,tokens)=>{
+                    if(error){
+                        return reject(error)
+
+                    }
+                    console.log('> Access Token received:')
+                    console.log(tokens)
+                    OAuthClient.setCredentials(tokens)
+                    resolve()
+                })
             })
         }
 
