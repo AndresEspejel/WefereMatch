@@ -1,0 +1,17 @@
+{
+  "name": "weferematch",
+  "version": "1.0.0",
+  "description": "busca match en videos de youtube, bueno esa es la idea.",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon src/main.js "
+  },
+  "author": "Andres Itzcode",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "googleapis": "^44.0.0",
+    "nodemon": "^1.19.4"
+  }
+}
