@@ -1,12 +1,14 @@
 const express = require('express')
 const google = require('googleapis').google
 const OAuth2 = google.auth.OAuth2
+const youtube = google.youtube({version:'v3'})
+const fs = require('fs')
 
 async function start() {
     console.log('> Starting Wefere Match')
     console.log('Bienvenido a WefereMarch una API para encontrar Match de textos en Videos de Youtube !!')
     await authenticateWhithAuth()
-    //await selectVideo()
+    await selectVideo()
     //await downloadCaptionsVideo()
     //await searchTextInCaptions()
     //console.log('> Terminate Wefere Match')
@@ -18,8 +20,8 @@ async function start() {
         requestUserConsent(OAuthClient)
         const authorizationToken =  await waitForGoogleCallback(webServer)
         await requestGoogleForAccessTokens(OAuthClient,authorizationToken)
-        //await setGlobalGoogleAuthentication()
-        //await stopWebServer()
+        await setGlobalGoogleAuthentication(OAuthClient)
+        await stopWebServer(webServer)
         
         async function startWebserver() {
             return new Promise((resolve, rejects) => {
@@ -80,7 +82,29 @@ async function start() {
             })
         }
 
+        function setGlobalGoogleAuthentication(OAuthClient){
+             google.options({
+                 auth: OAuthClient
+             })
+        }
+        async function stopWebServer(webServer){
+            return new Promise((resolve,reject)=>{
+                webServer.server.close(()=>{
+                    resolve()
+                })
+            })
+        }
     }
+    async function selectVideo(){
+        const requestParameters={
+            id:"U1e2VNtEqm4",
+            // id:"TqXDnlamg84o4bX0q2oaHz4nfWZdyiZMOrcuWsSLyPc=",
+            tfmt:"srt"
+        }
+        //const youtubeResponse = await youtube.captions.download(requestParameters);
+        const youtubeResponse = await youtube.search.list('id,snippet', {q: 'dogs', maxResults: 25})
+        console.log(`> YoutubeResponse: ${youtubeResponse.data}`)
+ }
 }
 
 start()
